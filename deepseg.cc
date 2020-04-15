@@ -91,8 +91,9 @@ int main(int argc, char* argv[]) {
 	int height = 480;
 
 	const char* filename = "deeplabv3_257_mv_gpu.tflite";
-	cv::Mat bg = convert_rgb_to_yuyv( cv::imread("background.png") );
+	cv::Mat bg = cv::imread("background.png");
 	cv::resize(bg,bg,cv::Size(width,height));
+	bg = convert_rgb_to_yuyv( bg );
 	int lbfd = loopback_init("/dev/video1",width,height,debug);
 
 	cv::VideoCapture cap(0 + CV_CAP_V4L2);
@@ -100,7 +101,7 @@ int main(int argc, char* argv[]) {
 
   cap.set(CV_CAP_PROP_FRAME_WIDTH,  width);
   cap.set(CV_CAP_PROP_FRAME_HEIGHT, height);
-  cap.set(CV_CAP_PROP_MODE, CV_CAP_MODE_YUYV);
+  cap.set(CV_CAP_PROP_FOURCC, *((uint32_t*)"YUYV"));
   cap.set(CV_CAP_PROP_CONVERT_RGB, false);
 
   // Load model
